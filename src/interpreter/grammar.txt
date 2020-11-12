@@ -1,0 +1,10 @@
+simple math exressions
+
+expr   : term((PLUS|MINUS) term)*
+term   : factor((MUL|DIV) factor)*
+factor : LPAREN EXPRESSION RPAREN|NUMBER
+
+precedence:
+
+term (left assoc.)
+expr (left assoc.)
