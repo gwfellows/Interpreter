@@ -194,7 +194,7 @@ class Parser { // a simple recursive-descent math parser
         return current == symbol;
     }
 
-    //is the parser at the end?
+    //is the parser at the end of the source?
     private boolean isAtEnd() {
         return (pos >= source.length() - 1);
     }
