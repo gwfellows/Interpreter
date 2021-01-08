@@ -22,7 +22,7 @@ public class MathParser {
      */
     //Main logic
     public static void main(String[] args) {
-        Parser code = new Parser(); //make a parser for the input 
+        Parser code = new Parser(); //make a parser
         Scanner input = new Scanner(System.in);
         System.out.println(
                 "|-----------------------------------|\n"
@@ -30,23 +30,24 @@ public class MathParser {
                 + "|Enter expressions and assignments  |\n"
                 + "|Enter 'exit' to exit the program   |\n"
                 + "|Enter 'help' for more information  |\n"
+                + "|Enter 'reset' to reset the program |\n"
                 + "|-----------------------------------|"
         );
         while (true) {
             System.out.print(">>>");
             String nextLine = " " + input.nextLine() + " "; //the command/expression
             switch (nextLine) {
-            //exit on command exit
+                //do nothing with an empty input
                 case "  ":
                     break;
-            //reset on command reset
+                //exit on command exit
                 case " exit ":
                     System.exit(0);
-            //show help on command help
+                //reset on command reset
                 case " reset ":
                     main(new String[0]);
                     break;
-            //otherwise evaluate the input and print the result (first checking if the input is valid)
+                //show help on command help
                 case " help ":
                     System.out.println("Supported operators:\n"
                             + " + for addition\n"
@@ -54,14 +55,19 @@ public class MathParser {
                             + " * for multiplication\n"
                             + " / for division (true division)\n"
                             + " = for assignment of constants\n"
+                            + "Constant names may only use the letters A-Z\n"
                             + "Numbers can use + or - as a sign and may be integer or floating point"
-                    );  break;
+                    );
+                    break;
+                //otherwise evaluate the input and print the result (first checking if the input is valid)
                 default:
                     try {
-                        System.out.println(code.readLine(nextLine));
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }   break;
+                    System.out.println(code.readLine(nextLine));
+                } catch (Exception e) {
+                    //catch and print any errors
+                    System.out.println(e);
+                }
+                break;
             }
         }
     }

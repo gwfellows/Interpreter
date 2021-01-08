@@ -12,8 +12,6 @@
 // |   number  =  ("+"|"-") (digit)+ ["."] {digit}       |
 // |   digit   =  "1"|"2"|"3"|"4"|"5"|"6"|"7"|"9"|"0"    |
 // |-----------------------------------------------------|
-// I know it is not good style to put multiple classes in 1 file,
-// but since the main class is so small, I thought it was fine
 package MathParser;
 
 import java.util.HashMap;
@@ -29,8 +27,8 @@ public class Parser {
     char current;
     int pos;
     static String ignore = "\t ";//these are whitespace charecters
-    static String valid = " \t-+/*.()0123456789=abcdefghijklmnopqrstuvwxyz_ABCDEFGHIJKLMNOPQRSTUVWXYZ";//these are valid charecters
-    HashMap<String, Double> vars = new HashMap<>();
+    static String valid = " \t-+/*.()0123456789=ABCDEFGHIJKLMNOPQRSTUVWXYZ";//these are valid charecters
+    HashMap<String, Double> vars = new HashMap<>(); //constants
 
     //empty constructor
     Parser() {
@@ -39,20 +37,11 @@ public class Parser {
     //read a line
     double readLine(String s) {
         //swap in constants
-        //this generates a regex to find where a constant name appears, preceded and followed by non-constant charecters
+        //this uses a regex to find where a constant name appears, preceded and fallowed by spaces of operators
         //this is to avoid swapping constants into the names of other constants
         //for example: ab=10 does not turn into 1.01.0=10 if a=1.0 and b=1.0
-        String all;
-        all = "";
         for (String i : vars.keySet()) {
-            all += i + "|";
-        }
-        try {
-            all = all.substring(0, all.length() - 1);
-        } catch (Exception e) {
-        }
-        for (String i : vars.keySet()) {
-            Pattern p = Pattern.compile(String.format("(?<=[^%s])%s(?=[^%s])", all, i, all));
+            Pattern p = Pattern.compile(String.format("(?<=\\*| |\\/|\\+|\\-|=)%s(?=\\*| |\\/|\\+|\\-|=)", i));
             s = p.matcher(s).replaceAll(vars.get(i).toString());
         }
         this.pos = 0;
@@ -67,7 +56,7 @@ public class Parser {
             char[] charArray = left.toCharArray();
             for (int i = 0; i < charArray.length; i++) {
                 char ch = charArray[i];
-                if (!(ch >= 'a' && ch <= 'z')) {
+                if (!(ch >= 'A' && ch <= 'Z')) {
                     throw new RuntimeException(String.format("Cannot assign %s to %s", left, right));
                 }
             }
@@ -76,6 +65,7 @@ public class Parser {
             //then parse the right side as an expression, putting the result in the map
             res = expr();
             vars.put(left, res);
+            //if it does not have an equal sign, evaluate the expression
         } else {
             res = expr();
         }
@@ -153,11 +143,11 @@ public class Parser {
         }
         return Double.parseDouble(str);
     }
-
     //|---------------|
     //|UTILITY METHODS|
     //|---------------|
     //advances parser by one char
+
     private void advance() {
         pos++;
         current = source.charAt(pos);
